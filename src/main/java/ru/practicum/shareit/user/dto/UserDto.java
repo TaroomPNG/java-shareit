@@ -1,26 +1,25 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.validation.OnCreate;
+import ru.practicum.shareit.validation.OnUpdate;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemDto {
+public class UserDto {
     private Long id;
 
     @NotBlank(groups = OnCreate.class)
     private String name;
 
     @NotBlank(groups = OnCreate.class)
-    private String description;
-
-    @NotNull(groups = OnCreate.class)
-    private Boolean available;
+    @Email(groups = {OnCreate.class, OnUpdate.class})
+    private String email;
 }
