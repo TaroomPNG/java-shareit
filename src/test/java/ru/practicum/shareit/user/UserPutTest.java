@@ -23,8 +23,8 @@ class UserPutTest extends ServiceTest {
                 .hasFieldOrPropertyWithValue("id", created.getId())
                 .hasFieldOrPropertyWithValue("email", "new@yandex.ru")
                 .hasFieldOrPropertyWithValue("name", "TEST");
-        assertThat(userRepository.existsByEmail("test@yandex.ru")).isFalse();
-        assertThat(userRepository.existsByEmail("new@yandex.ru")).isTrue();
+        assertThat(userRepository.existsByEmailIgnoreCase("test@yandex.ru")).isFalse();
+        assertThat(userRepository.existsByEmailIgnoreCase("new@yandex.ru")).isTrue();
     }
 
     @Test

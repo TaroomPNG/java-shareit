@@ -40,16 +40,6 @@ class UserGetTest extends ServiceTest {
     void getAllWhenEmpty() {
         assertThat(userService.getAll()).isEmpty();
         assertThat(userRepository.existsById(1L)).isFalse();
-        assertThat(userRepository.existsByEmail(null)).isFalse();
-    }
-
-    @Test
-    void findByIdReturnsCopy() {
-        UserDto created = addUser("test@yandex.ru", "TEST");
-        User stored = userRepository.findById(created.getId()).orElseThrow();
-        stored.setName("CHANGED");
-
-        assertThat(userService.getById(created.getId()))
-                .hasFieldOrPropertyWithValue("name", "TEST");
+        assertThat(userRepository.existsByEmailIgnoreCase("missing@yandex.ru")).isFalse();
     }
 }

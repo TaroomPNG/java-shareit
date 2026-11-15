@@ -21,8 +21,8 @@ class ItemPostTest extends ServiceTest {
                 .available(false)
                 .build());
 
+        assertThat(item.getId()).isNotNull();
         assertThat(item)
-                .hasFieldOrPropertyWithValue("id", 1L)
                 .hasFieldOrPropertyWithValue("name", "Drill")
                 .hasFieldOrPropertyWithValue("description", "Powerful drill")
                 .hasFieldOrPropertyWithValue("available", false);
@@ -35,14 +35,13 @@ class ItemPostTest extends ServiceTest {
         ItemDto first = addItem(owner.getId(), "Drill");
         ItemDto second = addItem(owner.getId(), "Saw");
 
-        assertThat(first.getId()).isEqualTo(1L);
-        assertThat(second.getId()).isEqualTo(2L);
+        assertThat(second.getId()).isGreaterThan(first.getId());
     }
 
     @Test
     void createItemForUnknownUser() {
         assertThatThrownBy(() -> addItem(9999L, "Drill"))
                 .isInstanceOf(NotFoundException.class);
-        assertThat(itemRepository.findAllByOwnerId(9999L)).isEmpty();
+        assertThat(itemRepository.findAllByOwnerIdOrderByIdAsc(9999L)).isEmpty();
     }
 }
