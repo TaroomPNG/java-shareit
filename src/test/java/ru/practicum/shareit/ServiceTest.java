@@ -1,32 +1,32 @@
 package ru.practicum.shareit;
 
-import org.junit.jupiter.api.BeforeEach;
-import ru.practicum.shareit.item.InMemoryItemRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.item.ItemServiceImpl;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.InMemoryUserRepository;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.UserServiceImpl;
 import ru.practicum.shareit.user.dto.UserDto;
 
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
 public abstract class ServiceTest {
 
-    protected InMemoryUserRepository userRepository;
+    @Autowired
+    protected UserRepository userRepository;
 
-    protected InMemoryItemRepository itemRepository;
+    @Autowired
+    protected ItemRepository itemRepository;
 
+    @Autowired
     protected UserService userService;
 
+    @Autowired
     protected ItemService itemService;
-
-    @BeforeEach
-    void resetData() {
-        userRepository = new InMemoryUserRepository();
-        itemRepository = new InMemoryItemRepository();
-        userService = new UserServiceImpl(userRepository);
-        itemService = new ItemServiceImpl(itemRepository, userRepository);
-    }
 
     protected UserDto addUser(String email, String name) {
         return userService.create(UserDto.builder()

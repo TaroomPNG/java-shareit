@@ -14,12 +14,12 @@ class UserPostTest extends ServiceTest {
     void addCorrectUser() {
         UserDto user = addUser("test@yandex.ru", "TEST");
 
+        assertThat(user.getId()).isNotNull();
         assertThat(user)
-                .hasFieldOrPropertyWithValue("id", 1L)
                 .hasFieldOrPropertyWithValue("name", "TEST")
                 .hasFieldOrPropertyWithValue("email", "test@yandex.ru");
         assertThat(userRepository.existsById(user.getId())).isTrue();
-        assertThat(userRepository.existsByEmail("TEST@yandex.ru")).isTrue();
+        assertThat(userRepository.existsByEmailIgnoreCase("TEST@yandex.ru")).isTrue();
     }
 
     @Test
@@ -27,8 +27,7 @@ class UserPostTest extends ServiceTest {
         UserDto first = addUser("test@yandex.ru", "TEST");
         UserDto second = addUser("test2@yandex.ru", "TEST2");
 
-        assertThat(first.getId()).isEqualTo(1L);
-        assertThat(second.getId()).isEqualTo(2L);
+        assertThat(second.getId()).isGreaterThan(first.getId());
     }
 
     @Test

@@ -17,7 +17,7 @@ class UserDeleteTest extends ServiceTest {
         userService.delete(created.getId());
 
         assertThat(userRepository.existsById(created.getId())).isFalse();
-        assertThat(userRepository.existsByEmail("test@yandex.ru")).isFalse();
+        assertThat(userRepository.existsByEmailIgnoreCase("test@yandex.ru")).isFalse();
         assertThatThrownBy(() -> userService.getById(created.getId()))
                 .isInstanceOf(NotFoundException.class);
     }
@@ -38,7 +38,7 @@ class UserDeleteTest extends ServiceTest {
 
         UserDto recreated = addUser("test@yandex.ru", "TEST");
 
-        assertThat(recreated.getId()).isEqualTo(2L);
+        assertThat(recreated.getId()).isNotEqualTo(created.getId());
         assertThat(recreated).hasFieldOrPropertyWithValue("email", "test@yandex.ru");
     }
 }

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.ServiceTest;
-import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -119,8 +118,8 @@ class ItemPutTest extends ServiceTest {
         assertThatThrownBy(() -> itemService.update(other.getId(), created.getId(), ItemDto.builder()
                 .name("Saw")
                 .build()))
-                .isInstanceOf(ForbiddenException.class);
-        assertThat(itemService.getById(created.getId()))
+                .isInstanceOf(NotFoundException.class);
+        assertThat(itemService.getById(owner.getId(), created.getId()))
                 .hasFieldOrPropertyWithValue("name", "Drill");
     }
 }

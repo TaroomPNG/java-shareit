@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.ServiceTest;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 
 class ItemSearchTest extends ServiceTest {
@@ -82,32 +81,5 @@ class ItemSearchTest extends ServiceTest {
         assertThat(itemService.search("drill"))
                 .extracting(ItemDto::getId)
                 .containsExactly(first.getId(), third.getId());
-    }
-
-    @Test
-    void searchSkipsNullNameAndDescription() {
-        itemRepository.create(Item.builder()
-                .name(null)
-                .description("only-description")
-                .available(true)
-                .build());
-        itemRepository.create(Item.builder()
-                .name("only-name")
-                .description(null)
-                .available(true)
-                .build());
-        itemRepository.create(Item.builder()
-                .name("hidden")
-                .description("hidden")
-                .available(null)
-                .build());
-
-        assertThat(itemRepository.searchAvailable("only-description"))
-                .extracting(Item::getDescription)
-                .containsExactly("only-description");
-        assertThat(itemRepository.searchAvailable("only-name"))
-                .extracting(Item::getName)
-                .containsExactly("only-name");
-        assertThat(itemRepository.searchAvailable("hidden")).isEmpty();
     }
 }

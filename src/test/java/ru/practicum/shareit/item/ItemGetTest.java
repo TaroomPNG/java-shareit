@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.ServiceTest;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 
 class ItemGetTest extends ServiceTest {
@@ -17,7 +16,7 @@ class ItemGetTest extends ServiceTest {
         UserDto owner = addUser("test@yandex.ru", "TEST");
         ItemDto created = addItem(owner.getId(), "Drill");
 
-        assertThat(itemService.getById(created.getId()))
+        assertThat(itemService.getById(owner.getId(), created.getId()))
                 .hasFieldOrPropertyWithValue("id", created.getId())
                 .hasFieldOrPropertyWithValue("name", "Drill")
                 .hasFieldOrPropertyWithValue("description", "Drill")
@@ -26,7 +25,8 @@ class ItemGetTest extends ServiceTest {
 
     @Test
     void getIncorrectItemId() {
-        assertThatThrownBy(() -> itemService.getById(9999L))
+        UserDto owner = addUser("test@yandex.ru", "TEST");
+        assertThatThrownBy(() -> itemService.getById(owner.getId(), 9999L))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -54,31 +54,5 @@ class ItemGetTest extends ServiceTest {
     void getAllByUnknownOwner() {
         assertThatThrownBy(() -> itemService.getAllByOwner(9999L))
                 .isInstanceOf(NotFoundException.class);
-    }
-
-    @Test
-    void getAllByOwnerSkipsItemsWithoutOwner() {
-        UserDto owner = addUser("test@yandex.ru", "TEST");
-        ItemDto own = addItem(owner.getId(), "Drill");
-        itemRepository.create(Item.builder()
-                .name("Orphan")
-                .description("Orphan")
-                .available(true)
-                .build());
-
-        assertThat(itemService.getAllByOwner(owner.getId()))
-                .extracting(ItemDto::getName)
-                .containsExactly(own.getName());
-    }
-
-    @Test
-    void findByIdReturnsCopy() {
-        UserDto owner = addUser("test@yandex.ru", "TEST");
-        ItemDto created = addItem(owner.getId(), "Drill");
-        Item stored = itemRepository.findById(created.getId()).orElseThrow();
-        stored.setName("CHANGED");
-
-        assertThat(itemService.getById(created.getId()))
-                .hasFieldOrPropertyWithValue("name", "Drill");
     }
 }

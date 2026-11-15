@@ -33,7 +33,8 @@ public class ErrorHandler {
             MissingServletRequestParameterException.class,
             MethodArgumentTypeMismatchException.class,
             HttpMessageNotReadableException.class,
-            ConstraintViolationException.class
+            ConstraintViolationException.class,
+            BadRequestException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequest(Exception e) {
