@@ -31,9 +31,9 @@ class BookingCreateDtoJsonTest {
                 .isEqualTo("2026-11-22T10:15:00");
         assertThat(json.write(dto)).extractingJsonPathStringValue("$.end")
                 .isEqualTo("2026-11-23T10:15:00");
-        assertThat(json.parse("""
-                {"itemId":1,"start":"2026-11-22T10:15:00","end":"2026-11-23T10:15:00"}
-                """)).usingRecursiveComparison().isEqualTo(dto);
+        assertThat(json.parse(
+                "{\"itemId\":1,\"start\":\"2026-11-22T10:15:00\",\"end\":\"2026-11-23T10:15:00\"}"))
+                .usingRecursiveComparison().isEqualTo(dto);
     }
 
     @Test
