@@ -1,10 +1,12 @@
 package ru.practicum.shareit.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.shareit.ServiceTest;
+import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.RequestItemDto;
@@ -74,5 +76,29 @@ class ItemRequestServiceTest extends ServiceTest {
         assertThat(found.getItems())
                 .extracting(RequestItemDto::getId, RequestItemDto::getName, RequestItemDto::getOwnerId)
                 .containsExactly(org.assertj.core.groups.Tuple.tuple(item.getId(), "Drill", owner.getId()));
+    }
+
+    @Test
+    void rejectsBlankDescription() {
+        UserDto requester = addUser("requester@yandex.ru", "requester");
+
+        assertThatThrownBy(() -> itemRequestService.create(requester.getId(),
+                ItemRequestDto.builder().description("  ").build()))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void rejectsInvalidPage() {
+        UserDto requester = addUser("requester@yandex.ru", "requester");
+
+        assertThatThrownBy(() -> itemRequestService.getOthers(requester.getId(), -1, 10))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void getOwnWhenEmpty() {
+        UserDto requester = addUser("requester@yandex.ru", "requester");
+
+        assertThat(itemRequestService.getOwn(requester.getId())).isEmpty();
     }
 }
